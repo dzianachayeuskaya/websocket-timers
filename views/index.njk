@@ -71,15 +71,9 @@
       <script src="/main.js"></script>
     [% else %]
       <section class="uk-container uk-margin-top uk-margin-bottom">
-        [% if authError %]
+        [% if authError or signupError or entryError %]
           <div class="uk-alert uk-alert-danger">
-            <p>[[ authError ]]</p>
-          </div>
-        [% endif %]
-
-        [% if signupError %]
-          <div class="uk-alert uk-alert-danger">
-            <p>[[ signupError ]]</p>
+            <p>[% if authError %][[ authError ]][% elif signupError %][[ signupError ]][% elif entryError %][[ entryError ]][% endif %]</p>
           </div>
         [% endif %]
 

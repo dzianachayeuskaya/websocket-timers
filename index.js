@@ -60,16 +60,14 @@ app.get("/", async (req, res) => {
     userToken: user ? token : "",
     authError: req.query.authError === "true" ? "Wrong username or password" : req.query.authError,
     signupError: req.query.signupError === "true" ? "A user with the same name already exists" : req.query.signupError,
+    entryError:
+      req.query.entryError === "true" ? "The username and password fields are required." : req.query.entryError,
   });
 });
 
 app.post("/signup", bodyParser.urlencoded({ extended: false }), async (req, res) => {
   if (!req.body.username || !req.body.password) {
-    return res
-      .status(404)
-      .send(
-        "Для регистрации пользователя в теле запроса необходимо указать поля username и password со значениями в формате x-www-form-urlencoded."
-      );
+    return res.redirect("/?entryError=true");
   }
 
   if (await findUserByUsername(req.db, req.body.username)) return res.redirect("/?signupError=true");
@@ -82,11 +80,7 @@ const compareAsync = promisify(bcrypt.compare);
 
 app.post("/login", bodyParser.urlencoded({ extended: false }), async (req, res) => {
   if (!req.body.username || !req.body.password) {
-    return res
-      .status(404)
-      .send(
-        "Для аутентификации в теле запроса необходимо указать поля username и password со значениями в формате x-www-form-urlencoded."
-      );
+    return res.redirect("/?entryError=true");
   }
 
   const { username, password } = req.body;
